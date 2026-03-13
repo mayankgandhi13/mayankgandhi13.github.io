@@ -22,6 +22,7 @@ const education = [
     school: 'MIT ADT University',
     location: 'Pune, India',
     date: 'Aug 2019 – Jun 2023',
+    gpa: '3.3 / 4.0',
     color: 'var(--pur)',
     courses: [],
   },
