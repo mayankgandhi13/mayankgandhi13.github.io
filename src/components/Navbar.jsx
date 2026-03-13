@@ -1,17 +1,20 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-scroll'
 
 const links = ['About', 'Skills', 'Map', 'Experience', 'Projects', 'Education', 'Contact']
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
-  const [open, setOpen] = useState(false)
 
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 40)
     window.addEventListener('scroll', fn)
     return () => window.removeEventListener('scroll', fn)
   }, [])
+
+  const scrollTo = (id) => {
+    const el = document.getElementById(id.toLowerCase())
+    if (el) el.scrollIntoView({ behavior: 'smooth' })
+  }
 
   return (
     <nav style={{
@@ -33,27 +36,21 @@ export default function Navbar() {
         }}>
           Mayank Gandhi
         </span>
-
-        {/* Desktop links */}
         <ul style={{ display: 'flex', gap: '2rem', listStyle: 'none' }}>
           {links.map(l => (
-            <li key={l} style={{ display: window.innerWidth < 700 ? 'none' : 'block' }}>
-              <Link
-                to={l.toLowerCase()}
-                smooth duration={600}
-                offset={-56}
+            <li key={l}>
+              <span
+                onClick={() => scrollTo(l)}
                 style={{
                   fontFamily: 'var(--mono)', fontSize: '0.78rem',
                   color: 'var(--mut)', cursor: 'pointer',
-                  letterSpacing: '0.1em', textDecoration: 'none',
-                  transition: 'color 0.2s'
+                  letterSpacing: '0.1em', transition: 'color 0.2s'
                 }}
-                activeStyle={{ color: 'var(--grn)' }}
                 onMouseEnter={e => e.target.style.color = 'var(--grn)'}
                 onMouseLeave={e => e.target.style.color = 'var(--mut)'}
               >
                 {l.toUpperCase()}
-              </Link>
+              </span>
             </li>
           ))}
         </ul>

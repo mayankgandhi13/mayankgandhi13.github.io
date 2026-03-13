@@ -4,23 +4,22 @@
   "version": "0.0.0",
   "type": "module",
   "homepage": "https://mayankgandhi13.github.io",
-"scripts": {
-  "dev": "vite",
-  "build": "vite build",
-  "lint": "eslint .",
-  "preview": "vite preview",
-  "predeploy": "npm run build",
-  "deploy": "gh-pages -d dist",
-  "publish": "npm run build && cp -r dist/* . && git add . && git commit -m 'update portfolio' && git push"
-},
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist",
+    "publish": "npm run build && cp -r dist/* . && git add . && git commit -m 'update portfolio' && git push"
+  },
   "dependencies": {
     "@tsparticles/react": "^3.0.0",
     "@tsparticles/slim": "^3.9.1",
     "d3": "^7.9.0",
     "framer-motion": "^12.36.0",
     "react": "^19.2.4",
-    "react-dom": "^19.2.4",
-    "react-scroll": "^1.9.3"
+    "react-dom": "^19.2.4"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
