@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mayank Vats | Bioinformatics & ML</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#06080f;--s1:#0c0f1a;--s2:#111827;--s3:#1a2235;
+  --grn:#00d4aa;--blu:#4a9eff;--pur:#8b5cf6;
+  --txt:#e2e8f0;--mut:#64748b;--brd:#1e293b;
+  --mono:'Courier New',monospace;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--txt);font-family:'Segoe UI',system-ui,sans-serif;overflow-x:hidden}
+
+#dna-bg{position:fixed;top:0;right:0;width:320px;height:100vh;opacity:0.06;pointer-events:none;z-index:0}
+
+nav{position:fixed;top:0;width:100%;z-index:100;background:rgba(6,8,15,0.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--brd)}
+.nav-i{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:54px;padding:0 2rem}
+.nav-logo{font-family:var(--mono);font-size:0.95rem;color:var(--grn)}
+.nav-logo span{color:var(--mut)}
+.nav-links{display:flex;gap:1.8rem;list-style:none}
+.nav-links a{text-decoration:none;color:var(--mut);font-size:0.85rem;font-family:var(--mono);transition:color 0.2s}
+.nav-links a:hover{color:var(--grn)}
+
+#hero{min-height:100vh;display:flex;align-items:center;position:relative;padding:5rem 2rem 3rem;z-index:1}
+.hero-wrap{max-width:1100px;margin:0 auto;width:100%;display:grid;grid-template-columns:1fr 420px;gap:3rem;align-items:center}
+.terminal-badge{font-family:var(--mono);font-size:0.78rem;color:var(--grn);background:rgba(0,212,170,0.07);border:1px solid rgba(0,212,170,0.2);padding:6px 14px;border-radius:6px;display:inline-block;margin-bottom:1.5rem}
+.terminal-badge::before{content:'$ ';color:var(--mut)}
+h1{font-size:clamp(2.2rem,5vw,3.8rem);font-weight:800;line-height:1.1;margin-bottom:0.8rem}
+h1 .line2{display:block;background:linear-gradient(90deg,var(--grn),var(--blu));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-desc{color:var(--mut);font-size:0.97rem;line-height:1.7;margin-bottom:2rem;max-width:480px}
+.hero-desc code{font-family:var(--mono);font-size:0.85rem;color:var(--grn);background:rgba(0,212,170,0.08);padding:1px 6px;border-radius:3px}
+.status-row{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:2rem}
+.status-pill{font-family:var(--mono);font-size:0.72rem;padding:4px 12px;border-radius:20px;border:1px solid}
+.pill-grn{color:var(--grn);border-color:rgba(0,212,170,0.3);background:rgba(0,212,170,0.06)}
+.pill-blu{color:var(--blu);border-color:rgba(74,158,255,0.3);background:rgba(74,158,255,0.06)}
+.pill-pur{color:var(--pur);border-color:rgba(139,92,246,0.3);background:rgba(139,92,246,0.06)}
+.cta-row{display:flex;gap:0.75rem;flex-wrap:wrap}
+.btn{padding:0.6rem 1.4rem;border-radius:7px;font-size:0.88rem;font-weight:500;text-decoration:none;cursor:pointer;transition:all 0.2s;border:none}
+.btn-g{background:var(--grn);color:#06080f}
+.btn-g:hover{background:#00f0c2;transform:translateY(-1px)}
+.btn-o{background:transparent;color:var(--txt);border:1px solid var(--brd)}
+.btn-o:hover{border-color:var(--grn);color:var(--grn)}
+
+.terminal-card{background:var(--s1);border:1px solid var(--brd);border-radius:12px;overflow:hidden;font-family:var(--mono);font-size:0.8rem}
+.term-bar{background:var(--s2);padding:10px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--brd)}
+.term-dot{width:10px;height:10px;border-radius:50%}
+.term-body{padding:1.2rem;line-height:2}
+.t-mut{color:var(--mut)}.t-grn{color:var(--grn)}.t-blu{color:var(--blu)}.t-pur{color:var(--pur)}.t-wht{color:var(--txt)}.t-ylw{color:#fbbf24}
+.cursor{display:inline-block;width:8px;height:14px;background:var(--grn);animation:blink 1s step-end infinite;vertical-align:middle;margin-left:2px}
+@keyframes blink{50%{opacity:0}}
+
+section{padding:5rem 2rem;max-width:1100px;margin:0 auto;position:relative;z-index:1}
+.sec-head{margin-bottom:2.5rem}
+.sec-label{font-family:var(--mono);font-size:0.72rem;color:var(--grn);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.4rem}
+.sec-label::before{content:'// '}
+.sec-title{font-size:clamp(1.5rem,3vw,2.2rem);font-weight:700}
+hr.div{border:none;border-top:1px solid var(--brd);margin:0}
+
+.pipeline-wrap{display:flex;flex-direction:column;gap:2rem}
+.pipeline-row{display:flex;align-items:center;gap:0}
+.pipe-label{font-family:var(--mono);font-size:0.75rem;color:var(--mut);width:140px;flex-shrink:0}
+.pipe-track{flex:1;display:flex;align-items:center;flex-wrap:wrap;gap:8px;padding-bottom:4px}
+.pipe-node{background:var(--s2);border:1px solid var(--brd);font-family:var(--mono);font-size:0.75rem;padding:5px 12px;white-space:nowrap;color:var(--txt);border-radius:4px;transition:all 0.2s}
+.pipe-node:hover{border-color:var(--grn);color:var(--grn)}
+.pipe-node.grn{border-color:rgba(0,212,170,0.3);color:var(--grn)}
+.pipe-node.blu{border-color:rgba(74,158,255,0.3);color:var(--blu)}
+.pipe-node.pur{border-color:rgba(139,92,246,0.3);color:var(--pur)}
+
+.proj-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.25rem}
+.proj-card{background:var(--s1);border:1px solid var(--brd);border-radius:12px;padding:1.4rem;display:flex;flex-direction:column;gap:0.9rem;transition:all 0.25s;position:relative;overflow:hidden}
+.proj-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--grn),var(--blu));opacity:0;transition:opacity 0.3s}
+.proj-card:hover{border-color:rgba(0,212,170,0.3);transform:translateY(-3px)}
+.proj-card:hover::before{opacity:1}
+.proj-top{display:flex;justify-content:space-between;align-items:flex-start}
+.proj-type{font-family:var(--mono);font-size:0.68rem;color:var(--grn);background:rgba(0,212,170,0.08);border:1px solid rgba(0,212,170,0.2);padding:2px 8px;border-radius:4px}
+.proj-links{display:flex;gap:6px}
+.proj-lnk{font-family:var(--mono);font-size:0.72rem;color:var(--mut);text-decoration:none;border:1px solid var(--brd);padding:2px 9px;border-radius:4px;transition:all 0.2s}
+.proj-lnk:hover{color:var(--grn);border-color:rgba(0,212,170,0.4)}
+.proj-name{font-size:1.05rem;font-weight:600}
+.proj-desc{font-size:0.85rem;color:var(--mut);line-height:1.65}
+.proj-stack{display:flex;flex-wrap:wrap;gap:5px;margin-top:auto}
+.stk{font-family:var(--mono);font-size:0.7rem;color:var(--blu);background:rgba(74,158,255,0.07);border:1px solid rgba(74,158,255,0.2);padding:2px 8px;border-radius:3px}
+
+.exp-grid{display:flex;flex-direction:column;gap:1rem}
+.exp-card{background:var(--s1);border:1px solid var(--brd);border-radius:10px;padding:1.25rem 1.5rem;display:grid;grid-template-columns:1fr auto;gap:0.3rem;transition:border-color 0.2s}
+.exp-card:hover{border-color:rgba(0,212,170,0.25)}
+.exp-role{font-size:1rem;font-weight:600}
+.exp-org{font-family:var(--mono);font-size:0.8rem;color:var(--grn);margin-bottom:0.5rem}
+.exp-desc{font-size:0.85rem;color:var(--mut);line-height:1.65;grid-column:1/-1}
+.exp-date{font-family:var(--mono);font-size:0.72rem;color:var(--mut);text-align:right;white-space:nowrap}
+
+.crs-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:0.75rem}
+.crs{background:var(--s1);border:1px solid var(--brd);border-radius:8px;padding:0.9rem 1.1rem;transition:all 0.2s}
+.crs:hover{border-color:rgba(139,92,246,0.4);background:var(--s2)}
+.crs-code{font-family:var(--mono);font-size:0.68rem;color:var(--pur);margin-bottom:0.3rem}
+.crs-name{font-size:0.85rem;color:var(--txt)}
+
+.contact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem}
+.clink{display:flex;align-items:center;gap:10px;background:var(--s1);border:1px solid var(--brd);border-radius:10px;padding:0.9rem 1.2rem;text-decoration:none;color:var(--txt);font-family:var(--mono);font-size:0.82rem;transition:all 0.2s}
+.clink:hover{border-color:var(--grn);color:var(--grn);transform:translateY(-2px)}
+.ci{width:18px;height:18px;fill:currentColor;flex-shrink:0}
+
+footer{text-align:center;padding:2rem;color:var(--mut);font-family:var(--mono);font-size:0.75rem;border-top:1px solid var(--brd);position:relative;z-index:1}
+
+.reveal{opacity:0;transform:translateY(20px);transition:opacity 0.6s,transform 0.6s}
+.reveal.in{opacity:1;transform:none}
+
+@media(max-width:768px){
+  .hero-wrap{grid-template-columns:1fr}
+  .terminal-card{display:none}
+  .pipeline-row{flex-direction:column;align-items:flex-start;gap:0.5rem}
+  .pipe-label{width:auto}
+}
+</style>
+</head>
+<body>
+
+<svg id="dna-bg" viewBox="0 0 300 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+  <g stroke="#00d4aa" stroke-width="1.5" fill="none">
+    <path d="M80,0 Q200,50 80,100 Q-40,150 80,200 Q200,250 80,300 Q-40,350 80,400 Q200,450 80,500 Q-40,550 80,600 Q200,650 80,700 Q-40,750 80,800 Q200,850 80,900"/>
+    <path d="M220,0 Q100,50 220,100 Q340,150 220,200 Q100,250 220,300 Q340,350 220,400 Q100,450 220,500 Q340,550 220,600 Q100,650 220,700 Q340,750 220,800 Q100,850 220,900"/>
+  </g>
+  <g stroke="#4a9eff" stroke-width="0.8" fill="none" opacity="0.6">
+    <line x1="80" y1="25" x2="220" y2="75"/><line x1="80" y1="75" x2="220" y2="25"/>
+    <line x1="80" y1="125" x2="220" y2="175"/><line x1="80" y1="175" x2="220" y2="125"/>
+    <line x1="80" y1="225" x2="220" y2="275"/><line x1="80" y1="275" x2="220" y2="225"/>
+    <line x1="80" y1="325" x2="220" y2="375"/><line x1="80" y1="375" x2="220" y2="325"/>
+    <line x1="80" y1="425" x2="220" y2="475"/><line x1="80" y1="475" x2="220" y2="425"/>
+    <line x1="80" y1="525" x2="220" y2="575"/><line x1="80" y1="575" x2="220" y2="525"/>
+    <line x1="80" y1="625" x2="220" y2="675"/><line x1="80" y1="675" x2="220" y2="625"/>
+    <line x1="80" y1="725" x2="220" y2="775"/><line x1="80" y1="775" x2="220" y2="725"/>
+    <line x1="80" y1="825" x2="220" y2="875"/>
+  </g>
+</svg>
+
+<nav>
+  <div class="nav-i">
+    <span class="nav-logo">mayank_vats<span>.bio</span></span>
+    <ul class="nav-links">
+      <li><a href="#skills">skills</a></li>
+      <li><a href="#projects">projects</a></li>
+      <li><a href="#experience">experience</a></li>
+      <li><a href="#coursework">courses</a></li>
+      <li><a href="#contact">contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div id="hero">
+  <div class="hero-wrap">
+    <div class="hero-left">
+      <div class="terminal-badge">whoami</div>
+      <h1>Mayank Vats<span class="line2">Bioinformatician</span></h1>
+      <p class="hero-desc">
+        MS Bioinformatics @ Northeastern &bull; GPA 3.9<br>
+        Building <code>NGS pipelines</code>, <code>multi-omics</code> models, and <code>ML</code> tools for computational oncology and genomics. Based in Boston, MA.
+      </p>
+      <div class="status-row">
+        <span class="status-pill pill-grn">F-1 OPT / CPT</span>
+        <span class="status-pill pill-blu">Open to Co-op</span>
+        <span class="status-pill pill-pur">Boston, MA</span>
+      </div>
+      <div class="cta-row">
+        <a class="btn btn-g" href="#projects">View Projects</a>
+        <a class="btn btn-o" href="#contact">Contact</a>
+        <a class="btn btn-o" href="./MayankGandhi-Resume.pdf" target="_blank">Resume</a>
+      </div>
+    </div>
+    <div class="terminal-card">
+      <div class="term-bar">
+        <div class="term-dot" style="background:#ff5f57"></div>
+        <div class="term-dot" style="background:#febc2e"></div>
+        <div class="term-dot" style="background:#28c840"></div>
+        <span style="margin-left:8px;font-size:0.72rem;color:var(--mut)">mayank@northeastern ~ </span>
+      </div>
+      <div class="term-body">
+        <div><span class="t-grn">$</span> <span class="t-wht">cat about.yaml</span></div>
+        <div><span class="t-mut">name</span><span class="t-wht">:    </span><span class="t-ylw">Mayank Vats</span></div>
+        <div><span class="t-mut">degree</span><span class="t-wht">:  </span><span class="t-ylw">MS Bioinformatics</span></div>
+        <div><span class="t-mut">gpa</span><span class="t-wht">:     </span><span class="t-grn">3.9 / 4.0</span></div>
+        <div><span class="t-mut">focus</span><span class="t-wht">:</span></div>
+        <div>&nbsp;&nbsp;<span class="t-blu">- computational_oncology</span></div>
+        <div>&nbsp;&nbsp;<span class="t-blu">- multi_omics</span></div>
+        <div>&nbsp;&nbsp;<span class="t-blu">- NGS_pipelines</span></div>
+        <div>&nbsp;&nbsp;<span class="t-blu">- ML_genomics</span></div>
+        <div><span class="t-mut">prev</span><span class="t-wht">:    </span><span class="t-pur">NCBS-TIFR</span></div>
+        <div><span class="t-mut">status</span><span class="t-wht">: </span><span class="t-grn">seeking co-op 2025</span></div>
+        <div><span class="t-grn">$</span> <span class="cursor"></span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="div">
+
+<section id="skills">
+  <div class="sec-head reveal">
+    <div class="sec-label">technical stack</div>
+    <div class="sec-title">Skills & Tools</div>
+  </div>
+  <div class="pipeline-wrap">
+    <div class="pipeline-row reveal">
+      <span class="pipe-label">languages</span>
+      <div class="pipe-track">
+        <div class="pipe-node grn">R</div>
+        <div class="pipe-node grn">Python</div>
+        <div class="pipe-node">Bash</div>
+        <div class="pipe-node">SQL</div>
+      </div>
+    </div>
+    <div class="pipeline-row reveal">
+      <span class="pipe-label">NGS pipeline</span>
+      <div class="pipe-track">
+        <div class="pipe-node">FastQC</div>
+        <div class="pipe-node">Trim Galore</div>
+        <div class="pipe-node blu">STAR / HISAT2</div>
+        <div class="pipe-node blu">Salmon</div>
+        <div class="pipe-node">SAMtools</div>
+        <div class="pipe-node">GATK</div>
+        <div class="pipe-node">BWA</div>
+      </div>
+    </div>
+    <div class="pipeline-row reveal">
+      <span class="pipe-label">R / Bioconductor</span>
+      <div class="pipe-track">
+        <div class="pipe-node grn">DESeq2</div>
+        <div class="pipe-node grn">limma</div>
+        <div class="pipe-node grn">edgeR</div>
+        <div class="pipe-node">tximport</div>
+        <div class="pipe-node">clusterProfiler</div>
+        <div class="pipe-node">fgsea</div>
+        <div class="pipe-node">Seurat</div>
+      </div>
+    </div>
+    <div class="pipeline-row reveal">
+      <span class="pipe-label">ML / DL</span>
+      <div class="pipe-track">
+        <div class="pipe-node pur">PyTorch</div>
+        <div class="pipe-node pur">scikit-learn</div>
+        <div class="pipe-node pur">SHAP</div>
+        <div class="pipe-node">XGBoost</div>
+        <div class="pipe-node">attention fusion</div>
+      </div>
+    </div>
+    <div class="pipeline-row reveal">
+      <span class="pipe-label">HPC / infra</span>
+      <div class="pipe-track">
+        <div class="pipe-node">SLURM</div>
+        <div class="pipe-node">Discovery HPC</div>
+        <div class="pipe-node">Conda</div>
+        <div class="pipe-node">Docker</div>
+        <div class="pipe-node">Git</div>
+      </div>
+    </div>
+    <div class="pipeline-row reveal">
+      <span class="pipe-label">viz / web</span>
+      <div class="pipe-track">
+        <div class="pipe-node">ggplot2</div>
+        <div class="pipe-node">D3.js</div>
+        <div class="pipe-node">React</div>
+        <div class="pipe-node">Recharts</div>
+        <div class="pipe-node">Plotly</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="div">
+
+<section id="projects">
+  <div class="sec-head reveal">
+    <div class="sec-label">portfolio</div>
+    <div class="sec-title">Featured Projects</div>
+  </div>
+  <div class="proj-grid">
+    <div class="proj-card reveal">
+      <div class="proj-top">
+        <span class="proj-type">expression atlas</span>
+        <div class="proj-links"><a class="proj-lnk" href="https://github.com/mayankgandhi13/neuroexpr" target="_blank">GitHub</a></div>
+      </div>
+      <div class="proj-name">NeuroExpr — Alzheimer's Expression Atlas</div>
+      <div class="proj-desc">Multi-tool visualization pipeline for AD using GSE5281 microarray data. Differential expression with limma, pathway enrichment, and interactive JavaScript frontend. Reproducible multi-language workflow.</div>
+      <div class="proj-stack">
+        <span class="stk">R</span><span class="stk">limma</span><span class="stk">clusterProfiler</span><span class="stk">Python</span><span class="stk">D3.js</span>
+      </div>
+    </div>
+    <div class="proj-card reveal">
+      <div class="proj-top">
+        <span class="proj-type">RNA-seq / GSEA</span>
+        <div class="proj-links"><a class="proj-lnk" href="https://github.com/mayankgandhi13/copd-transcriptomics" target="_blank">GitHub</a></div>
+      </div>
+      <div class="proj-name">COPD Transcriptomics</div>
+      <div class="proj-desc">Full differential expression pipeline on GSE76925 COPD lung tissue. limma voom → clusterProfiler → fgsea → Reactome GSEA. Identified dysregulated immune and fibrotic pathways.</div>
+      <div class="proj-stack">
+        <span class="stk">R</span><span class="stk">limma</span><span class="stk">fgsea</span><span class="stk">Reactome</span><span class="stk">GEO</span>
+      </div>
+    </div>
+    <div class="proj-card reveal">
+      <div class="proj-top">
+        <span class="proj-type">deep learning</span>
+        <div class="proj-links"><a class="proj-lnk" href="https://github.com/mayankgandhi13/amr-multiomics" target="_blank">GitHub</a></div>
+      </div>
+      <div class="proj-name">AMR Multi-omics Predictor</div>
+      <div class="proj-desc">Extends Ren et al. 2022. Multi-branch attention fusion network (PyTorch) integrating WGS, pangenome, and transcriptomics for AMR prediction. SHAP-based feature attribution for interpretability.</div>
+      <div class="proj-stack">
+        <span class="stk">PyTorch</span><span class="stk">SHAP</span><span class="stk">WGS</span><span class="stk">attention</span><span class="stk">Python</span>
+      </div>
+    </div>
+    <div class="proj-card reveal">
+      <div class="proj-top">
+        <span class="proj-type">biotech finance</span>
+        <div class="proj-links">
+          <a class="proj-lnk" href="https://mayankgandhi13.github.io/oncoclear" target="_blank">Live</a>
+          <a class="proj-lnk" href="https://github.com/mayankgandhi13/oncoclear" target="_blank">GitHub</a>
+        </div>
+      </div>
+      <div class="proj-name">OncoClear Investor Dashboard</div>
+      <div class="proj-desc">Interactive investor dashboard for a cancer diagnostics startup (BIOT 5219 CFO role). React + Recharts, deployed to GitHub Pages. Financial projections, market sizing, and KPI tracking.</div>
+      <div class="proj-stack">
+        <span class="stk">React</span><span class="stk">Recharts</span><span class="stk">GitHub Pages</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="div">
+
+<section id="experience">
+  <div class="sec-head reveal">
+    <div class="sec-label">background</div>
+    <div class="sec-title">Research Experience</div>
+  </div>
+  <div class="exp-grid">
+    <div class="exp-card reveal">
+      <div>
+        <div class="exp-role">MS Bioinformatics Researcher</div>
+        <div class="exp-org">Northeastern University &mdash; Boston, MA</div>
+      </div>
+      <div class="exp-date">2024 &ndash; Present</div>
+      <div class="exp-desc">RNA-seq pipelines on Discovery HPC (Salmon + tximport + DESeq2/limma). Pathway enrichment with GSEA and Reactome. Built portfolio-grade projects in computational oncology and AMR prediction. GPA 3.9/4.0.</div>
+    </div>
+    <div class="exp-card reveal">
+      <div>
+        <div class="exp-role">Research Intern</div>
+        <div class="exp-org">NCBS-TIFR &mdash; Bangalore, India</div>
+      </div>
+      <div class="exp-date">2022 &ndash; 2023</div>
+      <div class="exp-desc">Multi-omics integration and ODE modeling for Parkinson's disease pathway analysis. Developed computational frameworks for cross-layer disease mechanism exploration across genomics and proteomics.</div>
+    </div>
+    <div class="exp-card reveal">
+      <div>
+        <div class="exp-role">Undergraduate Research</div>
+        <div class="exp-org">Undergraduate Institution &mdash; India</div>
+      </div>
+      <div class="exp-date">2020 &ndash; 2022</div>
+      <div class="exp-desc">Wet lab: nanoparticle synthesis and cancer cell line assays. Developed experimental biology foundation that now informs computational modelling decisions.</div>
+    </div>
+  </div>
+</section>
+
+<hr class="div">
+
+<section id="coursework">
+  <div class="sec-head reveal">
+    <div class="sec-label">academic</div>
+    <div class="sec-title">Relevant Coursework</div>
+  </div>
+  <div class="crs-grid">
+    <div class="crs reveal"><div class="crs-code">BINF 6430</div><div class="crs-name">Bioinformatics Computational Methods</div></div>
+    <div class="crs reveal"><div class="crs-code">BIOT 5219</div><div class="crs-name">Biotechnology Business &amp; Strategy</div></div>
+    <div class="crs reveal"><div class="crs-code">BINF</div><div class="crs-name">Genomics &amp; NGS Analysis</div></div>
+    <div class="crs reveal"><div class="crs-code">BINF</div><div class="crs-name">Machine Learning in Bioinformatics</div></div>
+    <div class="crs reveal"><div class="crs-code">BINF</div><div class="crs-name">Statistical Methods for Omics Data</div></div>
+    <div class="crs reveal"><div class="crs-code">BINF</div><div class="crs-name">Structural Bioinformatics</div></div>
+  </div>
+</section>
+
+<hr class="div">
+
+<section id="contact">
+  <div class="sec-head reveal">
+    <div class="sec-label">connect</div>
+    <div class="sec-title">Get in Touch</div>
+  </div>
+  <div class="contact-grid reveal">
+    <a class="clink" href="mailto:YOUR_EMAIL_HERE">
+      <svg class="ci" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+      email
+    </a>
+    <a class="clink" href="https://github.com/mayankgandhi13" target="_blank">
+      <svg class="ci" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0012 2z"/></svg>
+      github
+    </a>
+    <a class="clink" href="https://linkedin.com/in/YOUR_LINKEDIN_HERE" target="_blank">
+      <svg class="ci" viewBox="0 0 24 24"><path d="M19 3a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14m-.5 15.5v-5.3a3.26 3.26 0 00-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 011.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 001.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 00-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
+      linkedin
+    </a>
+    <a class="clink" href="./MayankGandhi-Resume.pdf" target="_blank">
+      <svg class="ci" viewBox="0 0 24 24"><path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20M10,19L12,15H9V10H15V15L13,19H10Z"/></svg>
+      resume
+    </a>
+  </div>
+</section>
+
+<footer>// mayank_vats.bio &nbsp;&bull;&nbsp; built with HTML/CSS/JS &nbsp;&bull;&nbsp; hosted on GitHub Pages</footer>
+
+<script>
+const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')})},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>
