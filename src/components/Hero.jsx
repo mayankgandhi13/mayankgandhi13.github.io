@@ -33,6 +33,28 @@ function useTypewriter(phrases) {
   return text
 }
 
+function useCountUp(target, duration = 1800, start = false) {
+  const [count, setCount] = useState(0)
+  useEffect(() => {
+    if (!start) return
+    const isFloat = target % 1 !== 0
+    const steps = 80
+    const increment = target / steps
+    let current = 0
+    const timer = setInterval(() => {
+      current += increment
+      if (current >= target) {
+        setCount(target)
+        clearInterval(timer)
+      } else {
+        setCount(isFloat ? parseFloat(current.toFixed(1)) : Math.floor(current))
+      }
+    }, duration / steps)
+    return () => clearInterval(timer)
+  }, [start, target, duration])
+  return count
+}
+
 function HelixCanvas() {
   const ref = useRef()
   useEffect(() => {
@@ -66,29 +88,62 @@ function HelixCanvas() {
   return <canvas ref={ref} style={{ position: 'absolute', right: 0, top: 0, width: '38%', height: '100%', opacity: 0.4, pointerEvents: 'none' }} />
 }
 
-const stats = [
-  { value: '3.9', label: 'GPA' },
-  { value: '6+', label: 'Projects' },
-  { value: '3+', label: 'Years Research' },
-  { value: '5+', label: 'Certifications' },
+const statsData = [
+  { value: 3.9,  suffix: '',  label: 'GPA',           float: true },
+  { value: 6,    suffix: '+', label: 'Projects',       float: false },
+  { value: 3,    suffix: '+', label: 'Years Research', float: false },
+  { value: 5,    suffix: '+', label: 'Certifications', float: false },
 ]
+
+function StatCard({ value, suffix, label, float, started }) {
+  const count = useCountUp(value, 1800, started)
+  return (
+    <div style={{ textAlign: 'center', minWidth: 70 }}>
+      <div style={{
+        fontSize: 'clamp(1.8rem,3.5vw,2.4rem)', fontWeight: 800,
+        background: 'linear-gradient(135deg,var(--grn),var(--blu))',
+        WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+        backgroundClip: 'text', lineHeight: 1
+      }}>
+        {float ? count.toFixed(1) : count}{suffix}
+      </div>
+      <div style={{
+        fontFamily: 'var(--mono)', fontSize: '0.62rem',
+        color: 'var(--mut)', letterSpacing: '0.12em',
+        marginTop: 6, textTransform: 'uppercase'
+      }}>
+        {label}
+      </div>
+    </div>
+  )
+}
 
 export default function Hero() {
   const typed = useTypewriter(phrases)
-  const [init, setInit] = useState(false)
+  const [particlesInit, setParticlesInit] = useState(false)
+  const [statsStarted, setStatsStarted] = useState(false)
+  const statsRef = useRef()
 
-  const particlesInit = useCallback(async engine => {
+  const initParticles = useCallback(async engine => {
     await loadSlim(engine)
-    setInit(true)
+    setParticlesInit(true)
+  }, [])
+
+  // Trigger counter when stats come into view
+  useEffect(() => {
+    const obs = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) { setStatsStarted(true); obs.disconnect() }
+    }, { threshold: 0.5 })
+    if (statsRef.current) obs.observe(statsRef.current)
+    return () => obs.disconnect()
   }, [])
 
   return (
     <section id="hero" style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', position: 'relative', padding: '5rem 2rem 3rem', overflow: 'hidden' }}>
 
-      {/* Particle network background */}
       <Particles
         id="tsparticles"
-        init={particlesInit}
+        init={initParticles}
         options={{
           background: { color: { value: 'transparent' } },
           fpsLimit: 60,
@@ -104,16 +159,10 @@ export default function Hero() {
           },
           particles: {
             color: { value: ['#00e5b0', '#3d9eff', '#a78bfa'] },
-            links: {
-              color: '#3d9eff',
-              distance: 140,
-              enable: true,
-              opacity: 0.12,
-              width: 1,
-            },
+            links: { color: '#3d9eff', distance: 140, enable: true, opacity: 0.1, width: 1 },
             move: { enable: true, speed: 0.6, outModes: { default: 'bounce' } },
-            number: { value: 70, density: { enable: true, area: 900 } },
-            opacity: { value: { min: 0.2, max: 0.6 } },
+            number: { value: 60, density: { enable: true, area: 900 } },
+            opacity: { value: { min: 0.2, max: 0.5 } },
             shape: { type: 'circle' },
             size: { value: { min: 1, max: 3 } },
           },
@@ -144,10 +193,8 @@ export default function Hero() {
           <span style={{
             background: 'linear-gradient(100deg,var(--grn) 0%,var(--blu) 50%,var(--pur) 100%)',
             WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
-            filter: 'drop-shadow(0 0 30px rgba(0,229,176,0.3))'
-          }}>
-            Gandhi
-          </span>
+            filter: 'drop-shadow(0 0 40px rgba(0,229,176,0.25))'
+          }}>Gandhi</span>
         </motion.h1>
 
         <motion.p
@@ -170,16 +217,14 @@ export default function Hero() {
           <span style={{ display: 'inline-block', width: 2, height: 14, background: 'var(--grn)', marginLeft: 2, verticalAlign: 'middle', animation: 'blink 0.8s step-end infinite' }} />
         </motion.div>
 
-        {/* Stats row */}
+        {/* Animated stats */}
         <motion.div
+          ref={statsRef}
           initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.45 }}
-          style={{ display: 'flex', gap: '1.5rem', marginBottom: '2rem', flexWrap: 'wrap' }}
+          style={{ display: 'flex', gap: '2rem', marginBottom: '2rem', flexWrap: 'wrap', alignItems: 'center' }}
         >
-          {stats.map((s, i) => (
-            <div key={i} style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: 'clamp(1.5rem,3vw,2rem)', fontWeight: 800, background: 'linear-gradient(135deg,var(--grn),var(--blu))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', lineHeight: 1 }}>{s.value}</div>
-              <div style={{ fontFamily: 'var(--mono)', fontSize: '0.65rem', color: 'var(--mut)', letterSpacing: '0.1em', marginTop: 4 }}>{s.label}</div>
-            </div>
+          {statsData.map((s, i) => (
+            <StatCard key={i} {...s} started={statsStarted} />
           ))}
         </motion.div>
 

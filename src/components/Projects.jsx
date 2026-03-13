@@ -9,7 +9,7 @@ const projects = [
     desc: 'Multi-tool visualization pipeline for AD using GSE5281 microarray data. Differential expression with limma, pathway enrichment via clusterProfiler, and an interactive D3.js frontend.',
     stack: ['R', 'limma', 'clusterProfiler', 'Python', 'D3.js', 'GEO'],
     color: '#00e5b0',
-    github: 'https://github.com/mayankgandhi13/neuroexpr',
+    status: 'in-progress',
     lines: [
       '> Loading GSE5281 microarray data...',
       '> Running limma voom normalization...',
@@ -26,7 +26,7 @@ const projects = [
     desc: 'Full DEA pipeline on GSE76925 COPD lung tissue. limma voom → clusterProfiler → fgsea → Reactome GSEA. Identified dysregulated immune and fibrotic gene sets.',
     stack: ['R', 'limma', 'fgsea', 'Reactome', 'ggplot2'],
     color: '#a78bfa',
-    github: 'https://github.com/mayankgandhi13/copd-transcriptomics',
+    github: 'https://github.com/mayankgandhi13/Transcriptomics-Analysis-of-COPD-vs-Control-Lung-Tissue-GSE76925',
     lines: [
       '> Loading GSE76925 RNA-seq counts...',
       '> limma voom: 12,847 genes filtered',
@@ -43,7 +43,7 @@ const projects = [
     desc: 'Multi-branch attention fusion network (PyTorch) integrating WGS, pangenome, and transcriptomics for AMR prediction. SHAP explainability for feature attribution.',
     stack: ['PyTorch', 'SHAP', 'WGS', 'Attention', 'Python'],
     color: '#3d9eff',
-    github: 'https://github.com/mayankgandhi13/amr-multiomics',
+    status: 'in-progress',
     lines: [
       '> Initializing attention fusion model...',
       '> Branches: WGS | pangenome | RNA-seq',
@@ -60,14 +60,31 @@ const projects = [
     desc: "Biochemical signalling models of synapses for Parkinson's Disease (NCBS-TIFR). ODE + HillTau modeling, FindSim-based optimization, literature-curated experimental validation.",
     stack: ['Python', 'ODE', 'HillTau', 'FindSim', 'NCBS'],
     color: '#f472b6',
-    github: 'https://github.com/mayankgandhi13',
+    github: 'https://github.com/mayankgandhi13/HillTau',
     lines: [
       '> Loading WT synapse model (HillTau)...',
-      '> Applying Parkinson\'s mutations...',
+      "> Applying Parkinson's mutations...",
       '> Running ODE solver: t=0 to 1000ms',
       '> FindSim optimization: χ²=0.023',
       '> Disease model validated vs. literature',
       '✓ Simulation complete.',
+    ],
+  },
+  {
+    type: 'data-viz',
+    name: 'VizCompare',
+    fullName: 'Cross-Library Data Visualization Comparison',
+    desc: "Reproducing the same Alzheimer's dataset visualizations across tidyverse (R), Seaborn (Python), and Chart.js (JavaScript) to compare syntax, aesthetics, and use-case fit across ecosystems.",
+    stack: ['R', 'tidyverse', 'Python', 'Seaborn', 'Chart.js', 'JavaScript'],
+    color: '#a78bfa',
+    status: 'in-progress',
+    lines: [
+      '> Loading Alzheimer dataset...',
+      '> Rendering tidyverse (R) plots...',
+      '> Rendering Seaborn (Python) plots...',
+      '> Rendering Chart.js (JS) plots...',
+      '> Comparing syntax & aesthetics...',
+      '✓ Cross-library comparison complete.',
     ],
   },
   {
@@ -77,8 +94,8 @@ const projects = [
     desc: 'Interactive investor dashboard for a cancer diagnostics startup (BIOT 5219 CFO role). React + Recharts deployed to GitHub Pages.',
     stack: ['React', 'Recharts', 'GitHub Pages'],
     color: '#00e5b0',
-    github: 'https://github.com/mayankgandhi13/oncoclear',
-    live: 'https://mayankgandhi13.github.io/oncoclear',
+    github: 'https://github.com/mayankgandhi13/DashboardTesting-OncoDiagnostics',
+    live: 'https://mayankgandhi13.github.io/DashboardTesting-OncoDiagnostics/',
     lines: [
       '> Initializing OncoClear financials...',
       '> Market size: $4.2B TAM loaded',
@@ -86,23 +103,6 @@ const projects = [
       '> KPI dashboard: 12 metrics active',
       '> Deploying to GitHub Pages...',
       '✓ Dashboard live.',
-    ],
-  },
-  {
-    type: 'healthcare-data',
-    name: 'EDI-Pipeline',
-    fullName: 'EDI Healthcare Data Pipeline — Cencora',
-    desc: 'EDI/API integrations for healthcare supply chain at Cencora. Data mapping (850, 810, DNS, CNS) and optimization using X12 standards.',
-    stack: ['EDI', 'X12', 'API', 'Data Mapping'],
-    color: '#3d9eff',
-    github: 'https://github.com/mayankgandhi13',
-    lines: [
-      '> Connecting to Cencora EDI gateway...',
-      '> Mapping 850 PO → internal schema',
-      '> Processing 810 invoices: 2,847 records',
-      '> X12 validation: 99.8% pass rate',
-      '> DNS/CNS optimization complete',
-      '✓ Pipeline operational.',
     ],
   },
 ]
@@ -140,7 +140,6 @@ function TerminalCard({ project, i }) {
         display: 'flex', flexDirection: 'column',
       }}
     >
-      {/* Terminal top bar */}
       <div style={{
         background: 'var(--s2)', padding: '8px 14px',
         display: 'flex', alignItems: 'center', gap: 8,
@@ -155,9 +154,7 @@ function TerminalCard({ project, i }) {
         </span>
       </div>
 
-      {/* Terminal body */}
       <div style={{ padding: '1rem 1.25rem', flex: 1, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-        {/* Type badge */}
         <span style={{
           fontFamily: 'var(--mono)', fontSize: '0.63rem',
           color: project.color, background: `${project.color}12`,
@@ -169,7 +166,6 @@ function TerminalCard({ project, i }) {
 
         <div style={{ fontSize: '0.98rem', fontWeight: 700 }}>{project.fullName}</div>
 
-        {/* Terminal output on hover, description otherwise */}
         <div style={{ fontFamily: 'var(--mono)', fontSize: '0.75rem', minHeight: 110, flex: 1 }}>
           {hovered ? (
             <AnimatePresence>
@@ -195,7 +191,6 @@ function TerminalCard({ project, i }) {
           )}
         </div>
 
-        {/* Stack tags */}
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>
           {project.stack.map(s => (
             <span key={s} style={{
@@ -207,16 +202,24 @@ function TerminalCard({ project, i }) {
           ))}
         </div>
 
-        {/* Links */}
         <div style={{ display: 'flex', gap: 8 }}>
-          <a href={project.github} target="_blank" rel="noreferrer" style={{
-            fontFamily: 'var(--mono)', fontSize: '0.72rem', color: 'var(--mut)',
-            textDecoration: 'none', border: '1px solid var(--brd)',
-            padding: '3px 10px', borderRadius: 4, transition: 'all 0.2s'
-          }}
-            onMouseEnter={e => { e.target.style.color = project.color; e.target.style.borderColor = project.color }}
-            onMouseLeave={e => { e.target.style.color = 'var(--mut)'; e.target.style.borderColor = 'var(--brd)' }}
-          >GitHub ↗</a>
+          {project.status === 'in-progress' ? (
+            <span style={{
+              fontFamily: 'var(--mono)', fontSize: '0.72rem',
+              color: '#fbbf24', background: 'rgba(251,191,36,0.08)',
+              border: '1px solid rgba(251,191,36,0.3)',
+              padding: '3px 10px', borderRadius: 4
+            }}>⚙ In Progress</span>
+          ) : project.github ? (
+            <a href={project.github} target="_blank" rel="noreferrer" style={{
+              fontFamily: 'var(--mono)', fontSize: '0.72rem', color: 'var(--mut)',
+              textDecoration: 'none', border: '1px solid var(--brd)',
+              padding: '3px 10px', borderRadius: 4, transition: 'all 0.2s'
+            }}
+              onMouseEnter={e => { e.target.style.color = project.color; e.target.style.borderColor = project.color }}
+              onMouseLeave={e => { e.target.style.color = 'var(--mut)'; e.target.style.borderColor = 'var(--brd)' }}
+            >GitHub ↗</a>
+          ) : null}
           {project.live && (
             <a href={project.live} target="_blank" rel="noreferrer" style={{
               fontFamily: 'var(--mono)', fontSize: '0.72rem', color: 'var(--mut)',
