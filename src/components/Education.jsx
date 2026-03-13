@@ -8,14 +8,7 @@ const education = [
     date: 'Aug 2024 – Sep 2026',
     gpa: '3.9 / 4.0',
     color: 'var(--grn)',
-    courses: [
-      'Bioinformatics Computational Methods (BINF 6430)',
-      'Biotechnology Business & Strategy (BIOT 5219)',
-      'Genomics & NGS Analysis',
-      'Machine Learning in Bioinformatics',
-      'Statistical Methods for Omics Data',
-      'Structural Bioinformatics',
-    ],
+    courses: [],
   },
   {
     degree: 'Bachelor of Technology — Biomedical Engineering',
@@ -38,7 +31,7 @@ const certs = [
 
 const awards = [
   { label: 'Smart India Hackathon 2022', color: 'var(--grn)' },
-  { label: 'Best In Vedic Mathematics Award', color: 'var(--pur)' },
+  { label: 'Best In Vedic Award', color: 'var(--pur)' },
 ]
 
 export default function Education() {
@@ -62,7 +55,7 @@ export default function Education() {
               <div style={{ fontFamily: 'var(--mono)', fontSize: '0.78rem', color: edu.color, marginBottom: '0.2rem' }}>{edu.school}</div>
               <div style={{ fontFamily: 'var(--mono)', fontSize: '0.7rem', color: 'var(--mut)', marginBottom: '1rem' }}>{edu.location}</div>
               {edu.gpa && (
-                <div style={{ display: 'inline-block', fontFamily: 'var(--mono)', fontSize: '0.72rem', color: edu.color, background: 'rgba(0,229,176,0.08)', border: `1px solid ${edu.color}`, padding: '3px 10px', borderRadius: 20, marginBottom: '1rem' }}>
+                <div style={{ display: 'inline-block', fontFamily: 'var(--mono)', fontSize: '0.72rem', color: edu.color, background: 'rgba(0,229,176,0.08)', border: '1px solid ' + edu.color + '60', padding: '3px 10px', borderRadius: 20, marginBottom: '1rem' }}>
                   GPA {edu.gpa}
                 </div>
               )}
@@ -76,7 +69,7 @@ export default function Education() {
         </div>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.6rem' }}>
           {awards.map(a => (
-            <span key={a.label} style={{ fontFamily: 'var(--mono)', fontSize: '0.72rem', color: a.color, background: `${a.color}10`, border: `1px solid ${a.color}35`, padding: '5px 14px', borderRadius: 20 }}>🏆 {a.label}</span>
+            <span key={a.label} style={{ fontFamily: 'var(--mono)', fontSize: '0.72rem', color: a.color, background: a.color + '10', border: '1px solid ' + a.color + '35', padding: '5px 14px', borderRadius: 20 }}>🏆 {a.label}</span>
           ))}
         </div>
       </div>
