@@ -22,7 +22,7 @@ const education = [
     school: 'MIT ADT University',
     location: 'Pune, India',
     date: 'Aug 2019 – Jun 2023',
-    gpa: '3.3 / 4.0',
+    gpa: '8.5 / 10.0',
     color: 'var(--pur)',
     courses: [],
   },
@@ -38,7 +38,7 @@ const certs = [
 
 const awards = [
   { label: 'Smart India Hackathon 2022', color: 'var(--grn)' },
-  { label: 'Best In Vedic Award', color: 'var(--pur)' },
+  { label: 'Best In Vedic Mathematics Award', color: 'var(--pur)' },
 ]
 
 export default function Education() {
@@ -62,7 +62,7 @@ export default function Education() {
               <div style={{ fontFamily: 'var(--mono)', fontSize: '0.78rem', color: edu.color, marginBottom: '0.2rem' }}>{edu.school}</div>
               <div style={{ fontFamily: 'var(--mono)', fontSize: '0.7rem', color: 'var(--mut)', marginBottom: '1rem' }}>{edu.location}</div>
               {edu.gpa && (
-                <div style={{ display: 'inline-block', fontFamily: 'var(--mono)', fontSize: '0.72rem', color: 'var(--grn)', background: 'rgba(0,229,176,0.08)', border: '1px solid rgba(0,229,176,0.25)', padding: '3px 10px', borderRadius: 20, marginBottom: '1rem' }}>
+                <div style={{ display: 'inline-block', fontFamily: 'var(--mono)', fontSize: '0.72rem', color: edu.color, background: 'rgba(0,229,176,0.08)', border: `1px solid ${edu.color}`, padding: '3px 10px', borderRadius: 20, marginBottom: '1rem' }}>
                   GPA {edu.gpa}
                 </div>
               )}
